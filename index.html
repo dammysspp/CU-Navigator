@@ -145,17 +145,17 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;color:var(
 
 /* ====== QUICK BAR (desktop) ====== */
 #quick-bar{background:var(--white);border-top:1px solid var(--border);padding:8px 16px 10px;box-shadow:0 -2px 10px rgba(0,0,0,0.05);flex-shrink:0;}
-.qb-head{display:flex;align-items:baseline;gap:8px;margin-bottom:8px;}
-.qb-title{font-size:13px;font-weight:700;}
-.qb-sub{font-size:11px;color:var(--text-muted);}
-.qb-more{margin-left:auto;font-size:11px;font-weight:600;color:var(--cu-purple);cursor:pointer;}
-.qb-row{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;}
+
+
+
+
+
 .qb-row::-webkit-scrollbar{display:none;}
-.qb-item{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:5px 8px;border-radius:var(--radius-sm);transition:background 0.15s;border:none;background:none;min-width:62px;}
+
 .qb-item:hover{background:var(--cu-purple-lite);}
-.qb-icon{width:38px;height:38px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--cu-purple-lite);}
-.qb-item:hover .qb-icon{background:rgba(91,45,142,0.2);}
-.qb-lbl{font-size:10px;font-weight:500;color:var(--text-2);text-align:center;line-height:1.3;}
+
+.qb-item:hover 
+
 
 /* ====== FEATURE STRIP ====== */
 #feature-strip{background:var(--white);border-top:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;flex-shrink:0;}
@@ -687,6 +687,84 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;color:var(
   border-color: rgba(255,255,255,0.97) transparent transparent;
 }
 
+
+/* ====== QUICK BAR REDESIGN ====== */
+#quick-bar {
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  padding: 10px 16px 12px;
+  flex-shrink: 0;
+}
+.qb-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.qb-title { font-size: 13px; font-weight: 700; color: var(--text); }
+.qb-sub   { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+.qb-view-all {
+  font-size: 12px; font-weight: 600; color: var(--cu-purple);
+  background: var(--cu-purple-lite); border: none;
+  padding: 5px 12px; border-radius: 99px; cursor: pointer;
+  font-family: 'Outfit', sans-serif; transition: all 0.15s;
+}
+.qb-view-all:hover { background: var(--cu-purple); color: #fff; }
+
+.qb-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+.qb-row::-webkit-scrollbar { display: none; }
+
+.qb-loading {
+  font-size: 12px; color: var(--text-muted);
+  padding: 8px 0; font-style: italic;
+}
+
+.qb-item {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  transition: all 0.18s;
+  min-width: 72px;
+  max-width: 88px;
+  font-family: 'Outfit', sans-serif;
+}
+.qb-item:hover {
+  border-color: var(--cu-purple);
+  background: var(--cu-purple-lite);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(91,45,142,0.18);
+}
+.qb-icon-wrap {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  transition: transform 0.18s;
+}
+.qb-item:hover .qb-icon-wrap { transform: scale(1.1); }
+.qb-lbl {
+  font-size: 10px; font-weight: 600;
+  color: var(--text-2); text-align: center; line-height: 1.3;
+}
+.qb-item.live { border-color: rgba(91,45,142,0.2); }
+.qb-cat-badge {
+  font-size: 9px; font-weight: 700;
+  color: var(--text-muted); text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
 </style>
 <script src="https://unpkg.com/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
 </head>
@@ -1199,6 +1277,9 @@ loader.load('covenant%20map.glb', (gltf) => {
   model.position.sub(center); 
   
   scene.add(model);
+
+  // Rebuild quick access from actual 3D building names
+  setTimeout(buildQuickAccess, 100);
 }, undefined, (error) => {
   console.error('Error loading 3D model:', error);
   alert('Failed to load covenant map.glb!\\n\\nIf you opened this directly from a folder (file:///), your browser blocks loading 3D models for security.\\nPlease run a local web server (like VSCode Live Server).');
