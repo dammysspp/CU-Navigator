@@ -934,7 +934,7 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;color:var(
           <div class="card-text" id="card-desc-3d">Description goes here.</div>
           <div class="pc-stats" id="card-stats-3d"></div>
           <div class="pc-actions" style="margin-top:20px;">
-            <button class="pc-btn pc-btn-primary" id="btn-directions-3d" onclick="if(selectedId) { getDirections(BUILDINGS.find(b=>b.id===selectedId)); }">📍 Get Directions</button>
+            <button class="pc-btn pc-btn-primary" id="btn-directions-3d" onclick="if(selectedId) { openNavPanel(selectedId); }">📍 Get Directions</button>
             <button class="pc-btn pc-btn-secondary" id="btn-fav" style="background:#f3f4f6; color:#1f2937;">⭐ Save</button>
           </div>
         </div>
@@ -995,67 +995,352 @@ const CATEGORIES = {
 };
 
 const BUILDINGS = [
-  {id:'gate',      name:'Main Gate',                          cat:'admin',      emoji:'🚧',x:50,y:90,w:5,h:3,  desc:'The main entrance to Covenant University campus from Idiroko Road. Security checkpoints at entry.',                                                                                  tags:['Entry Point','Security','24/7']},
-  {id:'senate',    name:'Senate Building',                    cat:'admin',      emoji:'🏛️',x:49,y:68,w:8,h:6,  desc:"Famed as the most beautiful university senate building in Nigeria. Houses the Vice Chancellor's office, Council Chamber and key administrative units.",                             tags:['Administration','VC Office','Council']},
-  {id:'cucrid',    name:'CUCRID Building',                    cat:'academic',   emoji:'🔬',x:60,y:60,w:8,h:6,  desc:'Covenant University Centre for Research, Innovation and Discovery. Hub for postgraduate studies and cutting-edge research.',                                                         tags:['Research','Postgrad','Innovation']},
-  {id:'cst',       name:'College of Science & Technology',    cat:'academic',   emoji:'🧪',x:35,y:50,w:10,h:7, desc:'Houses departments including Physics, Chemistry, Computer Science, Mathematics, Biochemistry & Microbiology. Features 17 specialized science labs.',                                tags:['Labs','CST','Sciences']},
-  {id:'ceng',      name:'College of Engineering',             cat:'academic',   emoji:'⚙️',x:25,y:55,w:10,h:7, desc:'Houses Civil, Electrical, Mechanical & Petroleum Engineering departments. Features well-equipped engineering workshops and laboratories.',                                          tags:['Engineering','Workshops','CENG']},
-  {id:'cbs',       name:'College of Business & Social Sci.',  cat:'academic',   emoji:'📊',x:62,y:47,w:9,h:7,  desc:'Houses departments of Accounting, Economics, Business Management, Sociology, International Relations and more.',                                                                   tags:['Business','Social Sciences','CBS']},
-  {id:'clds',      name:'College of Leadership & Dev. Stud.', cat:'academic',   emoji:'🎓',x:52,y:46,w:8,h:6,  desc:'Focuses on leadership development, political science, mass communication, and human resource development programs.',                                                               tags:['CLDS','Leadership','Mass Comm']},
-  {id:'ceds',      name:'CEDS Building',                      cat:'academic',   emoji:'📐',x:38,y:60,w:8,h:5,  desc:'Houses 8 lecture rooms, 3 workshop spaces, a 150-capacity multipurpose hall and 19 office spaces.',                                                                               tags:['Lectures','Multipurpose','Workshops']},
-  {id:'lt1',       name:'Lecture Theatre 1',                  cat:'academic',   emoji:'🎭',x:30,y:45,w:7,h:5,  desc:'Seats 2,500 students with tiered fixed seating, multimedia facilities, and full air conditioning. Used for major CBT exams.',                                                     tags:['2500 seats','LT1','Air-conditioned']},
-  {id:'lt2',       name:'Lecture Theatre 2',                  cat:'academic',   emoji:'🎭',x:22,y:45,w:7,h:5,  desc:'Seats 1,400 students with state-of-the-art multimedia and air-conditioning. Adjacent to LT1 via courtyard.',                                                                     tags:['1400 seats','LT2','Multimedia']},
-  {id:'library',   name:'Centre for Learning Resources',      cat:'service',    emoji:'📚',x:46,y:55,w:8,h:6,  desc:'One of the largest university libraries in Africa — 3 storeys of collections, digital resources, group study rooms, and an online journal repository.',                           tags:['Library','3 Floors','e-Resources']},
-  {id:'chapel',    name:'University Chapel',                  cat:'worship',    emoji:'⛪',x:48,y:38,w:9,h:7,  desc:'Architectural centrepiece of campus seating 3,500 worshippers. Also houses Chaplaincy, Student Council and Physical Planning offices.',                                            tags:['Worship','3500 seats','Chapel']},
-  {id:'hall1',     name:'Shalom Hall (Male)',                  cat:'hostel',     emoji:'🏠',x:72,y:55,w:7,h:6,  desc:'Male hostel complex. 7-candlestick architectural design. Clean shared facilities with regular room inspections.',                                                                 tags:['Male','Hostel','Candlestick']},
-  {id:'hall2',     name:'Deborah Hall (Female)',               cat:'hostel',     emoji:'🏠',x:72,y:66,w:7,h:6,  desc:'Female hostel complex with Star of David architectural layout. Secure environment with 24-hr security.',                                                                          tags:['Female','Hostel','Star of David']},
-  {id:'hall3',     name:'Peter Hall (Male)',                   cat:'hostel',     emoji:'🏠',x:82,y:55,w:7,h:6,  desc:'Male hostel named after the Apostle Peter. Candlestick architectural design with communal study areas.',                                                                          tags:['Male','Hostel','Postgrad']},
-  {id:'hall4',     name:'Mary Hall (Female)',                  cat:'hostel',     emoji:'🏠',x:82,y:66,w:7,h:6,  desc:'Female hostel with modern facilities. Close proximity to the Cafeteria and medical centre.',                                                                                     tags:['Female','Hostel','Central']},
-  {id:'hall5',     name:'Joshua Hall (Male)',                  cat:'hostel',     emoji:'🏠',x:72,y:77,w:7,h:5,  desc:'One of the newer male hostels on campus. Features improved room layouts with better ventilation.',                                                                               tags:['Male','Hostel','New Block']},
-  {id:'hall6',     name:'Esther Hall (Female)',                cat:'hostel',     emoji:'🏠',x:82,y:77,w:7,h:5,  desc:'Female hostel named after Queen Esther. Located near the sports complex and cafeteria.',                                                                                         tags:['Female','Hostel']},
-  {id:'cafeteria', name:'Main Cafeteria',                      cat:'service',    emoji:'🍽️',x:77,y:71,w:5,h:4,  desc:'Centrally positioned among all 10 halls of residence. Capacity for 2,500 students dining simultaneously. Multiple food stations available.',                                    tags:['Food','2500 capacity','Central']},
-  {id:'clinic',    name:'Medical Centre',                      cat:'service',    emoji:'🏥',x:65,y:72,w:6,h:5,  desc:'Offers primary, secondary and select tertiary health services. Strategically located close to student halls for easy emergency access.',                                          tags:['Healthcare','Emergency','24/7']},
-  {id:'aldc',      name:'ALDC — African Leadership Dev. Ctr',  cat:'service',    emoji:'🏢',x:40,y:38,w:8,h:6,  desc:'Multi-purpose conference and seminar centre with 500-person conference hall, dining halls, seminar rooms and a gymnasium.',                                                       tags:['Conference','500 seats','Gym']},
-  {id:'atm',       name:'ATM / Banking Zone',                  cat:'service',    emoji:'🏧',x:60,y:73,w:4,h:3,  desc:'Campus banking zone near the admin area with multiple ATM terminals. Closest point for cash withdrawals on campus.',                                                              tags:['ATM','Banking','Finance']},
-  {id:'bookshop',  name:'Campus Bookshop',                     cat:'service',    emoji:'📖',x:55,y:73,w:4,h:3,  desc:'Official campus bookshop stocking academic texts, stationery, CU branded merchandise and essential supplies for all students.',                                                  tags:['Books','Stationery','CU Merch']},
-  {id:'salon',     name:'Salon & Barber Complex',              cat:'service',    emoji:'✂️',x:50,y:76,w:4,h:3,  desc:'On-campus grooming facility for students. Regulated by university policy on approved haircuts and styles.',                                                                      tags:['Grooming','Barber','Salon']},
-  {id:'printing',  name:'Printing / ICT Centre',               cat:'service',    emoji:'🖨️',x:45,y:76,w:4,h:3,  desc:'Provides printing, scanning, photocopying and computer access services for students during working hours.',                                                                     tags:['Printing','ICT','Scanning']},
-  {id:'stadium',   name:'Sports Complex & Stadium',            cat:'recreation', emoji:'⚽',x:20,y:62,w:12,h:10, desc:'Full-size football pitch and stadium. Also hosts lawn tennis, table tennis, volleyball, basketball courts and a swimming pool.',                                                  tags:['Football','Swimming','Tennis','Basketball']},
-  {id:'staffclub', name:'Guest House / Recreation Centre',     cat:'recreation', emoji:'🏡',x:22,y:33,w:8,h:5,  desc:'Houses guest facilities and recreational amenities. Includes Hebron Love Garden and accommodation for campus visitors.',                                                         tags:['Guests','Recreation','Garden']},
-  {id:'secondary', name:'CU Secondary School',                 cat:'academic',   emoji:'🏫',x:18,y:72,w:8,h:6,  desc:"Covenant University's on-campus secondary school for staff children and community students.",                                                                                   tags:['Secondary School','K-12','Community']},
+  {
+    id: 'roundabout',
+    meshName: 'Roundabout',
+    name: 'Main Roundabout',
+    cat: 'recreation',
+    emoji: '🟢',
+    x: 50, y: 88, w: 6, h: 6,
+    desc: 'The central roundabout near the university gate, beautified with landscaping and flagpoles representing international presence.',
+    tags: ['Landmark', 'Outdoor']
+  },
+  {
+    id: 'clds',
+    meshName: 'CMSS & CLDS Building',
+    name: 'College of Leadership & Dev. Studies',
+    cat: 'academic',
+    emoji: '🎓',
+    x: 52, y: 46, w: 8, h: 6,
+    desc: 'Houses the College of Leadership and Development Studies (CLDS) and College of Management and Social Sciences (CMSS). Fosters leadership, political science, and social sciences research.',
+    tags: ['CLDS', 'CMSS', 'Leadership', 'Lecture Rooms']
+  },
+  {
+    id: 'hall_joshua',
+    meshName: 'Joshua (formerly Esther) Hall',
+    name: 'Joshua Hall (Male)',
+    cat: 'hostel',
+    emoji: '🏠',
+    x: 72, y: 77, w: 7, h: 5,
+    desc: 'Vibrant male student hostel complex named after Joshua. Designed to foster community, academic discipline, and spiritual growth.',
+    tags: ['Male Hostel', 'Accommodation', 'Student Residence']
+  },
+  {
+    id: 'cafe_1',
+    meshName: 'Cafe 1',
+    name: 'Cafeteria 1',
+    cat: 'service',
+    emoji: '🍽️',
+    x: 70, y: 58, w: 6, h: 4,
+    desc: 'A major dining hall on campus offering a variety of affordable local and continental meals, beverages, and snacks to students.',
+    tags: ['Food', 'Dining', 'Cafeteria']
+  },
+  {
+    id: 'hall_john',
+    meshName: 'John Hall',
+    name: 'John Hall (Male)',
+    cat: 'hostel',
+    emoji: '🏠',
+    x: 65, y: 55, w: 7, h: 6,
+    desc: 'One of the prestigious male hostels on campus, housing undergraduate students with modern conveniences and study areas.',
+    tags: ['Male Hostel', 'Accommodation', 'Student Residence']
+  },
+  {
+    id: 'hall_paul',
+    meshName: 'Paul Hall',
+    name: 'Paul Hall (Male)',
+    cat: 'hostel',
+    emoji: '🏠',
+    x: 68, y: 50, w: 7, h: 6,
+    desc: 'Male hostel complex named after Apostle Paul. Centrally located with close proximity to academic areas.',
+    tags: ['Male Hostel', 'Accommodation', 'Student Residence']
+  },
+  {
+    id: 'hall_peter',
+    meshName: 'Peter Hall',
+    name: 'Peter Hall (Male)',
+    cat: 'hostel',
+    emoji: '🏠',
+    x: 82, y: 55, w: 7, h: 6,
+    desc: 'Spacious male student residence offering clean amenities, common rooms, and a quiet environment for learning.',
+    tags: ['Male Hostel', 'Accommodation', 'Student Residence']
+  },
+  {
+    id: 'ceds',
+    meshName: 'CEDS Building',
+    name: 'CEDS Building',
+    cat: 'academic',
+    emoji: '📐',
+    x: 38, y: 60, w: 8, h: 5,
+    desc: 'Houses the Centre for Entrepreneurial Development Studies. Equipped with lecture rooms, workshops, and incubation spaces for student projects.',
+    tags: ['Entrepreneurship', 'Workshops', 'Incubator']
+  },
+  {
+    id: 'hall_deborah',
+    meshName: 'Deborah Hall',
+    name: 'Deborah Hall (Female)',
+    cat: 'hostel',
+    emoji: '🏠',
+    x: 72, y: 66, w: 7, h: 6,
+    desc: 'Female hostel complex named after Prophetess Deborah. Features secure environments, common rooms, and outdoor spaces.',
+    tags: ['Female Hostel', 'Accommodation', 'Student Residence']
+  },
+  {
+    id: 'hall_mary',
+    meshName: 'Mary Hall',
+    name: 'Mary Hall (Female)',
+    cat: 'hostel',
+    emoji: '🏠',
+    x: 82, y: 66, w: 7, h: 6,
+    desc: 'Female hostel named after Mary. Offers comfortable student rooms, study halls, and 24/7 security services.',
+    tags: ['Female Hostel', 'Accommodation', 'Student Residence']
+  },
+  {
+    id: 'cucrid',
+    meshName: 'CUCRID Building',
+    name: 'CUCRID Building',
+    cat: 'academic',
+    emoji: '🔬',
+    x: 60, y: 60, w: 8, h: 6,
+    desc: 'Covenant University Centre for Research, Innovation and Discovery. Hub for multidisciplinary research, grants, and international partnerships.',
+    tags: ['Research Hub', 'Postgraduate', 'Innovation']
+  },
+  {
+    id: 'cst',
+    meshName: 'CST Building',
+    name: 'College of Science & Tech.',
+    cat: 'academic',
+    emoji: '🧪',
+    x: 35, y: 50, w: 10, h: 7,
+    desc: 'The College of Science and Technology (CST) building. Features cutting-edge chemistry, biochemistry, computer science, and physics laboratories.',
+    tags: ['Sciences', 'Labs', 'CST']
+  },
+  {
+    id: 'ceng_petroleum',
+    meshName: 'Petroleum and Chemical Engineering Building',
+    name: 'Petroleum & Chem. Eng. Bldg',
+    cat: 'academic',
+    emoji: '🛢️',
+    x: 23, y: 53, w: 8, h: 6,
+    desc: 'Specialized building for Petroleum and Chemical Engineering programs, containing simulation labs, distillation setups, and heavy equipment.',
+    tags: ['Engineering', 'Petroleum', 'Chemical Labs']
+  },
+  {
+    id: 'lecture_theatres',
+    meshName: 'Lecture Theatre 1&2',
+    name: 'Lecture Theatres 1 & 2',
+    cat: 'academic',
+    emoji: '🎭',
+    x: 26, y: 45, w: 12, h: 5,
+    desc: 'A massive combined lecture block housing two high-capacity tiered halls (LT1 and LT2) equipped with modern audio-visual systems and air conditioning.',
+    tags: ['Lectures', 'CBT Exams', 'Tiered Seating']
+  },
+  {
+    id: 'stadium',
+    meshName: 'University Stadium',
+    name: 'University Stadium',
+    cat: 'recreation',
+    emoji: '⚽',
+    x: 20, y: 62, w: 12, h: 10,
+    desc: 'A full-sized athletic stadium and football field hosting university matches, sports events, and general fitness activities.',
+    tags: ['Sports Pitch', 'Athletics', 'Football']
+  },
+  {
+    id: 'sport_complex',
+    meshName: 'Sport Complex',
+    name: 'Sports Complex',
+    cat: 'recreation',
+    emoji: '🏀',
+    x: 18, y: 60, w: 10, h: 8,
+    desc: 'Multi-court indoor and outdoor sports facility featuring basketball, volleyball, lawn tennis, table tennis, and a swimming pool.',
+    tags: ['Basketball', 'Tennis', 'Volleyball', 'Pool']
+  },
+  {
+    id: 'cafe_2',
+    meshName: 'Cafe Two',
+    name: 'Cafeteria 2',
+    cat: 'service',
+    emoji: '🍽️',
+    x: 77, y: 71, w: 5, h: 4,
+    desc: 'A second major cafeteria cluster serving variety foods, convenience stores, laundry, and banking services.',
+    tags: ['Food', 'Convenience Stores', 'Laundry']
+  },
+  {
+    id: 'guest_house',
+    meshName: 'Guest House',
+    name: 'University Guest House',
+    cat: 'recreation',
+    emoji: '🏡',
+    x: 22, y: 33, w: 8, h: 5,
+    desc: 'Modern hospitality facilities for university visitors, guests, and external examiners. Offers lodging and dining services.',
+    tags: ['Visitor Lodging', 'Guest Rooms', 'Restaurant']
+  },
+  {
+    id: 'staff_quarters',
+    meshName: 'Staff Quarters',
+    name: 'Staff Quarters',
+    cat: 'recreation',
+    emoji: '🏘️',
+    x: 15, y: 25, w: 12, h: 8,
+    desc: 'Residential housing complexes for covenant university faculty and staff members, surrounded by green lawns and quiet streets.',
+    tags: ['Residential', 'Staff Housing', 'Quiet Zone']
+  },
+  {
+    id: 'hall_pg_female',
+    meshName: 'PG Female',
+    name: 'PG Female Hostel',
+    cat: 'hostel',
+    emoji: '🏠',
+    x: 88, y: 62, w: 7, h: 6,
+    desc: 'Secure residential hostel dedicated to female postgraduate and PhD students, providing an environment tailored for research and study.',
+    tags: ['Female Hostel', 'Postgraduate', 'Quiet Residence']
+  },
+  {
+    id: 'hall_pg_male',
+    meshName: 'PG Male',
+    name: 'PG Male Hostel',
+    cat: 'hostel',
+    emoji: '🏠',
+    x: 88, y: 55, w: 7, h: 6,
+    desc: 'Residential hostel complex dedicated to male postgraduate students, featuring single rooms, internet access, and study areas.',
+    tags: ['Male Hostel', 'Postgraduate', 'Quiet Residence']
+  },
+  {
+    id: 'ceng_civil',
+    meshName: 'Civil Engineering',
+    name: 'Civil Engineering Bldg',
+    cat: 'academic',
+    emoji: '🏗️',
+    x: 25, y: 55, w: 8, h: 6,
+    desc: 'Houses Civil Engineering labs, concrete testing facilities, and geotechnical engineering workshops.',
+    tags: ['Engineering', 'Civil', 'Concrete Lab']
+  },
+  {
+    id: 'ceng_eie',
+    meshName: 'EIE Engineering Building',
+    name: 'Electrical & Info. Eng.',
+    cat: 'academic',
+    emoji: '⚙️',
+    x: 27, y: 58, w: 8, h: 6,
+    desc: 'Houses departments of Electrical & Electronics Engineering, Computer Engineering, and Information & Communication Technology.',
+    tags: ['Engineering', 'EIE', 'Robotics Lab']
+  },
+  {
+    id: 'ceng_mech',
+    meshName: 'Mechanical Engineering',
+    name: 'Mechanical Engineering Bldg',
+    cat: 'academic',
+    emoji: '🔧',
+    x: 21, y: 57, w: 8, h: 6,
+    desc: 'Houses Mechanical Engineering workshops, thermodynamics labs, CAD design studios, and automotive research units.',
+    tags: ['Engineering', 'Mechanical', 'Workshops']
+  },
+  {
+    id: 'aldc',
+    meshName: 'ALDC',
+    name: 'ALDC Conference Centre',
+    cat: 'service',
+    emoji: '🏢',
+    x: 40, y: 38, w: 8, h: 6,
+    desc: 'African Leadership Development Centre. A state-of-the-art facility containing conference halls, meeting rooms, research offices, and guest suites.',
+    tags: ['Conference', 'Seminars', 'Leadership']
+  },
+  {
+    id: 'hall_lydia',
+    meshName: 'Lydia Hall',
+    name: 'Lydia Hall (Female)',
+    cat: 'hostel',
+    emoji: '🏠',
+    x: 75, y: 72, w: 7, h: 6,
+    desc: 'Lydia female hostel complex, featuring excellent student rooms, convenience stores, and close proximity to academic zones.',
+    tags: ['Female Hostel', 'Accommodation', 'Student Residence']
+  },
+  {
+    id: 'library',
+    meshName: 'Library/CLR',
+    name: 'Centre for Learning Resources',
+    cat: 'service',
+    emoji: '📚',
+    x: 46, y: 55, w: 8, h: 6,
+    desc: 'Centre for Learning Resources (CLR). A 3-storey ultra-modern library housing over 150,000 physical volumes, cyber halls, and research portals.',
+    tags: ['Library', 'Research', 'e-Learning']
+  },
+  {
+    id: 'medical_centre',
+    meshName: 'Medical Centre',
+    name: 'Medical Centre',
+    cat: 'service',
+    emoji: '🏥',
+    x: 65, y: 72, w: 6, h: 5,
+    desc: 'Fully functional campus hospital providing 24/7 outpatient, emergency, dental, ophthalmic, and pharmaceutical services to staff and students.',
+    tags: ['Healthcare', 'Clinic', 'Emergency', '24/7']
+  },
+  {
+    id: 'hall_daniel',
+    meshName: 'Daniel Hall',
+    name: 'Daniel Hall (Male)',
+    cat: 'hostel',
+    emoji: '🏠',
+    x: 75, y: 50, w: 7, h: 6,
+    desc: 'Popular male student residence complex named after Daniel, offering clean rooms, common study spaces, and recreational yards.',
+    tags: ['Male Hostel', 'Accommodation', 'Student Residence']
+  },
+  {
+    id: 'hall_joseph',
+    meshName: 'Joseph Hall',
+    name: 'Joseph Hall (Male)',
+    cat: 'hostel',
+    emoji: '🏠',
+    x: 75, y: 60, w: 7, h: 6,
+    desc: 'Premium male student hostel named after Joseph. Designed with modern architecture, common study spaces, and high-speed campus network access.',
+    tags: ['Male Hostel', 'Accommodation', 'Student Residence']
+  },
+  {
+    id: 'gate',
+    meshName: '',
+    name: 'Main Gate',
+    cat: 'admin',
+    emoji: '🚧',
+    x: 50, y: 92, w: 5, h: 3,
+    desc: 'The grand entrance to Covenant University from Idiroko Road, equipped with high security checkpoints.',
+    tags: ['Entry Point', 'Security', '24/7']
+  }
 ];
 
 
 // Short names for floating labels
 const SHORT_NAMES = {
-  'gate':      'Main Gate',
-  'senate':    'Senate Bldg',
-  'cucrid':    'CUCRID',
-  'cst':       'Sci & Tech',
-  'ceng':      'Engineering',
-  'cbs':       'Business',
-  'clds':      'Leadership',
-  'ceds':      'CEDS',
-  'lt1':       'LT1',
-  'lt2':       'LT2',
-  'library':   'Library',
-  'chapel':    'Chapel',
-  'hall1':     'Shalom Hall',
-  'hall2':     'Deborah Hall',
-  'hall3':     'Peter Hall',
-  'hall4':     'Mary Hall',
-  'hall5':     'Joshua Hall',
-  'hall6':     'Esther Hall',
-  'cafeteria': 'Cafeteria',
-  'clinic':    'Medical Ctr',
-  'aldc':      'ALDC',
-  'atm':       'ATM / Bank',
-  'bookshop':  'Bookshop',
-  'salon':     'Salon',
-  'printing':  'ICT Centre',
-  'stadium':   'Stadium',
-  'staffclub': 'Guest House',
-  'secondary': 'Sec. School',
+  'roundabout':      'Roundabout',
+  'clds':            'CLDS & CMSS',
+  'hall_joshua':     'Joshua Hall',
+  'cafe_1':          'Cafeteria 1',
+  'hall_john':       'John Hall',
+  'hall_paul':       'Paul Hall',
+  'hall_peter':      'Peter Hall',
+  'ceds':            'CEDS Bldg',
+  'hall_deborah':    'Deborah Hall',
+  'hall_mary':       'Mary Hall',
+  'cucrid':          'CUCRID',
+  'cst':             'Sci & Tech',
+  'ceng_petroleum':  'Petroleum Eng',
+  'lecture_theatres': 'Lec Theatre',
+  'stadium':         'Stadium',
+  'sport_complex':   'Sports Cmplx',
+  'cafe_2':          'Cafeteria 2',
+  'guest_house':     'Guest House',
+  'staff_quarters':   'Staff Qtrs',
+  'hall_pg_female':  'PG Female',
+  'hall_pg_male':    'PG Male',
+  'ceng_civil':      'Civil Eng',
+  'ceng_eie':        'EIE Eng',
+  'ceng_mech':       'Mech Eng',
+  'aldc':            'ALDC',
+  'hall_lydia':      'Lydia Hall',
+  'library':         'Library CLR',
+  'medical_centre':  'Medical Ctr',
+  'hall_daniel':     'Daniel Hall',
+  'hall_joseph':     'Joseph Hall',
+  'gate':            'Main Gate'
 };
 
 // =====================================================
@@ -1209,7 +1494,7 @@ loader.load('covenant%20map.glb', (gltf) => {
       let current = child;
       while (current) {
         if (current.name) {
-          const bData = BUILDINGS.find(b => current.name.toLowerCase().includes(b.id.toLowerCase()));
+          const bData = BUILDINGS.find(b => b.meshName && current.name.toLowerCase().includes(b.meshName.toLowerCase()));
           if (bData) {
             matchedData = bData;
             break;
@@ -1453,27 +1738,81 @@ resEl.addEventListener('click',e=>{const item=e.target.closest('.res-item[data-i
 document.addEventListener('click',e=>{if(!e.target.closest('#search-input')&&!e.target.closest('#mobile-search-input')&&!e.target.closest('#search-results'))resEl.classList.remove('open');});
 
 // =====================================================
-// QUICK ACCESS
+// DYNAMIC QUICK ACCESS — built from actual loaded meshes
 // =====================================================
-const quickDefs=[
-  {id:'library',   lbl:'Centre for\nLearning', icon:'📚'},
-  {id:'chapel',    lbl:'University\nChapel',   icon:'⛪'},
-  {id:'senate',    lbl:'Senate\nBuilding',     icon:'🏛️'},
-  {id:'printing',  lbl:'ICT\nCentre',          icon:'💻'},
-  {id:'cafeteria', lbl:'Main\nCafeteria',      icon:'🍽️'},
-  {id:'atm',       lbl:'ATM /\nBanking',       icon:'🏧'},
-  {id:'clinic',    lbl:'Medical\nCentre',      icon:'🏥'},
-];
+function buildQuickAccess() {
+  const qRow  = document.getElementById('quick-row');
+  const mqRow = document.getElementById('mqrow');
+  if (!qRow) return;
 
-const qRow=document.getElementById('quick-row');
-if(qRow){
-  qRow.innerHTML=quickDefs.map(q=>`<button class="qb-item" data-id="${q.id}"><div class="qb-icon">${q.icon}</div><div class="qb-lbl">${q.lbl.replace('\n','<br>')}</div></button>`).join('');
-  qRow.addEventListener('click',e=>{const it=e.target.closest('.qb-item');if(!it)return;const b=BUILDINGS.find(x=>x.id===it.dataset.id);if(b)selectBuilding(b);});
-}
-const mqRow=document.getElementById('mqrow');
-if(mqRow){
-  mqRow.innerHTML=quickDefs.map(q=>`<button class="mq-item" data-id="${q.id}"><div class="mq-icon">${q.icon}</div><div class="mq-lbl">${q.lbl.split('\n')[0]}</div></button>`).join('');
-  mqRow.addEventListener('click',e=>{const it=e.target.closest('.mq-item');if(!it)return;const b=BUILDINGS.find(x=>x.id===it.dataset.id);if(b)selectBuilding(b);});
+  // Deduplicate by building ID (one card per building)
+  const seen  = new Set();
+  const items = [];
+
+  buildings3D.forEach(mesh => {
+    const b = mesh.userData;
+    if (!b || !b.id || seen.has(b.id)) return;
+    seen.add(b.id);
+    items.push(b);
+  });
+
+  // Sort: put key campus landmarks first
+  const PRIORITY = ['library','chapel','roundabout','medical_centre','cst','cucrid','ceds','lecture_theatres','stadium','sport_complex','guest_house'];
+  items.sort((a, b) => {
+    const ai = PRIORITY.indexOf(a.id);
+    const bi = PRIORITY.indexOf(b.id);
+    if (ai === -1 && bi === -1) return 0;
+    if (ai === -1) return 1;
+    if (bi === -1) return -1;
+    return ai - bi;
+  });
+
+  // Show max 12 on desktop quick bar
+  const desktop = items.slice(0, 12);
+
+  qRow.innerHTML = desktop.map(b => {
+    const cat    = CATEGORIES[b.cat] || {};
+    const bg     = cat.bg    || 'rgba(91,45,142,0.10)';
+    const short  = SHORT_NAMES[b.id] || b.name.split(' ').slice(0, 2).join(' ');
+    return `
+      <button class="qb-item live" data-id="${b.id}"
+        title="${b.name}"
+        style="border-color:${(cat.color||'#5B2D8E')}22;">
+        <div class="qb-icon-wrap" style="background:${bg}">
+          ${b.emoji}
+        </div>
+        <div class="qb-lbl">${short}</div>
+      </button>`;
+  }).join('');
+
+  // Wire click
+  qRow.querySelectorAll('.qb-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const b = BUILDINGS.find(x => x.id === btn.dataset.id);
+      if (b) selectBuilding(b.id);
+    });
+  });
+
+  // Mobile quick row
+  if (mqRow) {
+    const mobile = items.slice(0, 8);
+    mqRow.innerHTML = mobile.map(b => {
+      const cat   = CATEGORIES[b.cat] || {};
+      const bg    = cat.bg || 'rgba(91,45,142,0.10)';
+      const short = SHORT_NAMES[b.id] || b.name.split(' ')[0];
+      return `
+        <button class="mq-item" data-id="${b.id}">
+          <div style="font-size:22px;background:${bg};border-radius:10px;padding:4px 8px;">${b.emoji}</div>
+          <div class="mq-lbl">${short}</div>
+        </button>`;
+    }).join('');
+
+    mqRow.querySelectorAll('.mq-item').forEach(btn => {
+      btn.addEventListener('click', () => selectBuilding(btn.dataset.id));
+    });
+  }
+
+  console.log(`Quick access built with ${desktop.length} real buildings from the 3D map.`);
 }
 
 // =====================================================
@@ -1546,8 +1885,8 @@ function genSteps(b){
 
 document.getElementById('close-dir').addEventListener('click',()=>{document.getElementById('dir-panel').classList.remove('open');document.getElementById('route-card').classList.remove('open');routeFrom=null;routeTo=null;});
 document.getElementById('rc-close-btn').addEventListener('click',()=>{document.getElementById('route-card').classList.remove('open');document.getElementById('dir-panel').classList.remove('open');routeFrom=null;routeTo=null;});
-document.getElementById('rc-start-btn').addEventListener('click',()=>{const b=BUILDINGS.find(x=>x.id===selectedId);if(b)getDirections(b);else showToast('👆 Tap a building first, then Start Navigation');});
-document.getElementById('btn-directions').addEventListener('click',()=>{const b=BUILDINGS.find(x=>x.id===selectedId);if(b)getDirections(b);});
+document.getElementById('rc-start-btn').addEventListener('click',()=>{if(selectedId) openNavPanel(selectedId);else showToast('👆 Tap a building first, then Start Navigation');});
+document.getElementById('btn-directions').addEventListener('click',()=>{if(selectedId) openNavPanel(selectedId);});
 document.getElementById('btn-info').addEventListener('click',()=>{showToast(`ℹ️ ${BUILDINGS.find(b=>b.id===selectedId)?.name} — CU official records`);});
 document.getElementById('close-card').addEventListener('click', () => {
   deselectBuilding();
@@ -1773,6 +2112,309 @@ function startExploreTour() {
 renderer.domElement.addEventListener('pointerdown', () => {
   if(tourInterval) { clearTimeout(tourInterval); tourInterval = null; }
 });
+
+// =====================================================
+// OFFLINE WAYPOINT / ROUTING ENGINE
+// =====================================================
+
+// Campus path graph — nodes are building IDs, edges are distances in metres
+// Distances are approximate real-world walking distances on campus
+const CAMPUS_GRAPH = {
+  gate:             { roundabout: 80 },
+  roundabout:       { gate: 80, medical_centre: 150, ceds: 200, library: 250, clds: 280, aldc: 300 },
+  clds:             { library: 100, aldc: 150, hall_daniel: 180, hall_joseph: 200 },
+  ceds:             { roundabout: 200, cst: 100, library: 120 },
+  cst:              { ceds: 100, lecture_theatres: 120, ceng_petroleum: 150, ceng_civil: 180 },
+  ceng_petroleum:   { cst: 150, lecture_theatres: 80, ceng_civil: 100, ceng_mech: 120, ceng_eie: 130 },
+  ceng_civil:       { ceng_petroleum: 100, cst: 180, ceng_mech: 80, ceng_eie: 90, stadium: 150 },
+  ceng_mech:        { ceng_civil: 80, ceng_petroleum: 120, ceng_eie: 70, guest_house: 180 },
+  ceng_eie:         { ceng_mech: 70, ceng_civil: 90, ceng_petroleum: 130, guest_house: 150 },
+  lecture_theatres: { cst: 120, ceng_petroleum: 80, stadium: 220 },
+  stadium:          { ceng_civil: 150, lecture_theatres: 220, sport_complex: 100, hall_joshua: 200 },
+  sport_complex:    { stadium: 100, guest_house: 250, staff_quarters: 300 },
+  guest_house:      { ceng_mech: 180, ceng_eie: 150, sport_complex: 250, staff_quarters: 200 },
+  staff_quarters:   { guest_house: 200, sport_complex: 300 },
+  library:          { roundabout: 250, clds: 100, ceds: 120, cucrid: 150, medical_centre: 160 },
+  medical_centre:   { roundabout: 150, library: 160, cafe_1: 180, cafe_2: 200 },
+  cucrid:           { library: 150, cafe_1: 100, hall_john: 120, hall_paul: 150 },
+  cafe_1:           { medical_centre: 180, cucrid: 100, hall_john: 80, hall_paul: 90, hall_deborah: 120, hall_lydia: 130 },
+  cafe_2:           { medical_centre: 200, hall_mary: 100, hall_peter: 120, hall_pg_female: 150, hall_pg_male: 150 },
+  hall_daniel:      { clds: 180, hall_joseph: 80, hall_paul: 100 },
+  hall_joseph:      { hall_daniel: 80, clds: 200, hall_paul: 90, hall_john: 120 },
+  hall_paul:        { hall_daniel: 100, hall_joseph: 90, cucrid: 150, hall_john: 80 },
+  hall_john:        { hall_joseph: 120, hall_paul: 80, cucrid: 120, cafe_1: 80, hall_deborah: 100 },
+  hall_deborah:     { hall_john: 100, cafe_1: 120, hall_lydia: 80, hall_mary: 110 },
+  hall_lydia:       { hall_deborah: 80, cafe_1: 130, hall_joshua: 90, hall_mary: 120 },
+  hall_joshua:      { hall_lydia: 90, stadium: 200, hall_mary: 150 },
+  hall_mary:        { hall_deborah: 110, hall_lydia: 120, hall_joshua: 150, cafe_2: 100, hall_peter: 90 },
+  hall_peter:       { hall_mary: 90, cafe_2: 120, hall_pg_male: 100 },
+  hall_pg_male:     { hall_peter: 100, cafe_2: 150, hall_pg_female: 80 },
+  hall_pg_female:   { hall_pg_male: 80, cafe_2: 150 }
+};
+
+// Walking speeds (metres/minute)
+const SPEEDS = { walk: 80, bike: 300, car: 600 };
+let currentMode = 'walk';
+let navFromId = 'gate';
+let navToId   = null;
+let activeSearchField = null;
+let routeLine3D = null;
+let walkStep = 0;
+let walkPath = [];
+
+function setMode(mode, btn) {
+  currentMode = mode;
+  document.querySelectorAll('.np-mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if(navToId) calculateRoute();
+}
+
+function openNavPanel(presetId) {
+  document.getElementById('nav-panel').classList.add('open');
+  if(presetId) {
+    navToId = presetId;
+    const b = BUILDINGS.find(x => x.id === presetId);
+    if(b) document.getElementById('np-to').value = b.name;
+    calculateRoute();
+  }
+}
+
+function closeNavPanel() {
+  document.getElementById('nav-panel').classList.remove('open');
+  clearRoute3D();
+}
+
+function openBuildingSearch(fieldId) {
+  activeSearchField = fieldId;
+  const list = document.getElementById('np-search-list');
+  list.innerHTML = BUILDINGS.map(b => {
+    const cat = CATEGORIES[b.cat];
+    return `<div class="np-search-item" onclick="selectNavBuilding('${b.id}', '${b.name.replace(/'/g,"\\'")}')">
+      ${b.emoji} ${b.name} <span style="color:${cat.color}; font-size:11px;">(${cat.label})</span>
+    </div>`;
+  }).join('');
+  list.classList.add('open');
+}
+
+document.addEventListener('click', e => {
+  if(!e.target.closest('#np-search-list') && !e.target.closest('.np-field')) {
+    document.getElementById('np-search-list').classList.remove('open');
+  }
+});
+
+function selectNavBuilding(id, name) {
+  document.getElementById('np-search-list').classList.remove('open');
+  if(activeSearchField === 'np-from') {
+    navFromId = id;
+    document.getElementById('np-from').value = name;
+  } else {
+    navToId = id;
+    document.getElementById('np-to').value = name;
+  }
+  activeSearchField = null;
+}
+
+function swapNavPoints() {
+  const tmpId   = navFromId;
+  const tmpName = document.getElementById('np-from').value;
+  navFromId = navToId || 'gate';
+  document.getElementById('np-from').value = document.getElementById('np-to').value || 'Main Gate';
+  navToId = tmpId;
+  document.getElementById('np-to').value = tmpName;
+  if(navToId) calculateRoute();
+}
+
+// ── Dijkstra shortest path ────────────────────────────────────────────────
+function dijkstra(from, to) {
+  const dist  = {};
+  const prev  = {};
+  const queue = new Set(Object.keys(CAMPUS_GRAPH));
+  
+  queue.forEach(n => { dist[n] = Infinity; prev[n] = null; });
+  dist[from] = 0;
+  
+  while(queue.size > 0) {
+    // Pick unvisited node with smallest dist
+    let u = null;
+    queue.forEach(n => { if(u === null || dist[n] < dist[u]) u = n; });
+    if(u === to) break;
+    queue.delete(u);
+    
+    const neighbours = CAMPUS_GRAPH[u] || {};
+    for(const v in neighbours) {
+      if(!queue.has(v)) continue;
+      const alt = dist[u] + neighbours[v];
+      if(alt < dist[v]) { dist[v] = alt; prev[v] = u; }
+    }
+  }
+  
+  // Reconstruct path
+  const path = [];
+  let cur = to;
+  while(cur) { path.unshift(cur); cur = prev[cur]; }
+  return { path, totalDist: Math.round(dist[to]) };
+}
+
+// ── Human-readable step directions ───────────────────────────────────────
+const COMPASS_HINTS = {
+  gate:             'Enter through the Main Gate and proceed inward',
+  roundabout:       'Go past the Main Roundabout',
+  clds:             'Walk along the College of Leadership & Dev. Studies',
+  library:          'Pass by the Centre for Learning Resources (Library)',
+  medical_centre:   'Pass the Medical Centre',
+  cucrid:           'Walk past the CUCRID Building',
+  cafe_1:           'Walk by Cafeteria 1',
+  cafe_2:           'Walk by Cafeteria 2',
+  lecture_theatres: 'Pass by the Lecture Theatres 1 & 2',
+  cst:              'Pass through the College of Science & Technology area',
+  ceng_petroleum:   'Walk past the Petroleum and Chemical Engineering building',
+  stadium:          'Continue along the Sports Stadium perimeter',
+  sport_complex:    'Pass by the Sports Complex courts',
+};
+
+function generateSteps(path) {
+  const steps = [];
+  for(let i = 0; i < path.length; i++) {
+    const id = path[i];
+    const b  = BUILDINGS.find(x => x.id === id);
+    const name = b ? b.name : id;
+    
+    if(i === 0)              steps.push({ text: `Start at ${name}`, dist: '' });
+    else if(i === path.length-1) steps.push({ text: `Arrive at ${name}`, dist: '', final: true });
+    else {
+      const edgeDist = CAMPUS_GRAPH[path[i-1]][id] || 0;
+      steps.push({ text: COMPASS_HINTS[id] || `Continue towards ${name}`, dist: `~${edgeDist}m` });
+    }
+  }
+  return steps;
+}
+
+// ── 3D Route Visualisation ────────────────────────────────────────────────
+function clearRoute3D() {
+  if(routeLine3D) { scene.remove(routeLine3D); routeLine3D = null; }
+  startMarker.visible = false;
+  endMarker.visible   = false;
+}
+
+function drawRoute3D(path) {
+  clearRoute3D();
+  
+  // Collect 3D positions for each building in the path
+  const pts = [];
+  path.forEach(id => {
+    const b = BUILDINGS.find(x => x.id === id);
+    if(!b) return;
+    
+    // Try to get real 3D position from loaded mesh
+    const mesh3D = buildings3D.find(m => m.userData.id === id);
+    if(mesh3D) {
+      const box = new THREE.Box3().setFromObject(mesh3D);
+      const c   = box.getCenter(new THREE.Vector3());
+      pts.push(new THREE.Vector3(c.x, c.y + 5, c.z));
+    } else {
+      // Fall back to 2D data scaled to 3D space (x/y are % of campus)
+      pts.push(new THREE.Vector3((b.x - 50) * 2.5, 5, (b.y - 50) * 2.5));
+    }
+  });
+  
+  if(pts.length < 2) return;
+  
+  // CatmullRom smooth curve through all waypoints
+  const curve  = new THREE.CatmullRomCurve3(pts);
+  const points = curve.getPoints(80);
+  const geo    = new THREE.BufferGeometry().setFromPoints(points);
+  const mat    = new THREE.LineDashedMaterial({
+    color: 0xfacc15, linewidth: 2,
+    dashSize: 4, gapSize: 2,
+  });
+  routeLine3D = new THREE.Line(geo, mat);
+  routeLine3D.computeLineDistances();
+  scene.add(routeLine3D);
+  
+  // Start / End markers
+  startMarker.position.copy(pts[0]);
+  startMarker.userData.baseY = pts[0].y;
+  startMarker.visible = true;
+  
+  endMarker.position.copy(pts[pts.length - 1]);
+  endMarker.userData.baseY = pts[pts.length - 1].y;
+  endMarker.visible = true;
+  
+  // Fly camera to see the whole route
+  const box = new THREE.Box3();
+  pts.forEach(p => box.expandByPoint(p));
+  const center = box.getCenter(new THREE.Vector3());
+  const size   = box.getSize(new THREE.Vector3());
+  animateCam(center, Math.max(size.x, size.z) * 1.2 + 80);
+}
+
+// ── Main route calculation ────────────────────────────────────────────────
+function calculateRoute() {
+  if(!navFromId || !navToId) {
+    showToast('Please select both a starting point and destination.');
+    return;
+  }
+  if(navFromId === navToId) {
+    showToast('Starting point and destination are the same!');
+    return;
+  }
+  if(!CAMPUS_GRAPH[navFromId] || !CAMPUS_GRAPH[navToId]) {
+    showToast('No route available between these buildings.');
+    return;
+  }
+  
+  const { path, totalDist } = dijkstra(navFromId, navToId);
+  if(!path.length || totalDist === Infinity) {
+    showToast('Could not find a path. Try different buildings.');
+    return;
+  }
+  
+  walkPath = path;
+  const speed  = SPEEDS[currentMode];
+  const minutes = Math.ceil(totalDist / speed);
+  const modeEmoji = { walk:'🚶', bike:'🚲', car:'🚗' }[currentMode];
+  
+  // Update UI
+  document.getElementById('np-eta').textContent  = `${modeEmoji} ${minutes} min`;
+  document.getElementById('np-dist').textContent = `${totalDist}m · ${path.length - 1} waypoints`;
+  
+  const steps = generateSteps(path);
+  document.getElementById('np-steps').innerHTML = steps.map((s, i) => `
+    <div class="np-step">
+      <div class="np-step-num" style="${s.final ? 'background:linear-gradient(135deg,#C8A02A,#facc15);color:#2e0c59;' : ''}">${s.final ? '🏁' : i + 1}</div>
+      <div>
+        <div class="np-step-text">${s.text}</div>
+        ${s.dist ? `<div class="np-step-dist">${s.dist}</div>` : ''}
+      </div>
+    </div>`).join('');
+  
+  document.getElementById('np-route-result').style.display = 'block';
+  document.getElementById('np-empty').style.display        = 'none';
+  
+  // Draw on 3D map
+  drawRoute3D(path);
+}
+
+// ── Step-by-step walkthrough ─────────────────────────────────────────────
+function startWalkthrough() {
+  walkStep = 0;
+  showNextStep();
+}
+
+function showNextStep() {
+  if(walkStep >= walkPath.length) { showToast('🏁 You have arrived!'); return; }
+  const id   = walkPath[walkStep];
+  const b    = BUILDINGS.find(x => x.id === id);
+  if(b) {
+    selectBuilding(id);
+    showToast(`Step ${walkStep + 1}/${walkPath.length}: ${b.name}`);
+  }
+  walkStep++;
+  if(walkStep < walkPath.length) {
+    setTimeout(showNextStep, 4000);
+  }
+}
+
 
 // =====================================================
 // WIRE UP THE DYSFUNCTIONAL BUTTONS
