@@ -1492,9 +1492,13 @@ loader.load('covenant%20map.glb', (gltf) => {
       
       let matchedData = null;
       let current = child;
+      
+      const normalize = (str) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
+      
       while (current) {
         if (current.name) {
-          const bData = BUILDINGS.find(b => b.meshName && current.name.toLowerCase().includes(b.meshName.toLowerCase()));
+          const normName = normalize(current.name);
+          const bData = BUILDINGS.find(b => b.meshName && normName.includes(normalize(b.meshName)));
           if (bData) {
             matchedData = bData;
             break;
@@ -1502,6 +1506,7 @@ loader.load('covenant%20map.glb', (gltf) => {
         }
         current = current.parent;
       }
+
       
       if (matchedData) {
         buildings3D.push(child);
