@@ -588,6 +588,9 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
 renderer.setSize(mw.clientWidth, mw.clientHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
 
 const oldCanvas = document.getElementById('map-canvas');
 if (oldCanvas) oldCanvas.remove();
@@ -601,14 +604,15 @@ controls.minDistance = 10;
 controls.maxDistance = 250;
 
 // Lighting
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
 scene.add(ambientLight);
-const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0x8d8d8d, 0.6);
 hemiLight.position.set(0, 200, 0);
 scene.add(hemiLight);
-const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
-dirLight.position.set(100, 200, 100);
+const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+dirLight.position.set(150, 250, 100);
 dirLight.castShadow = true;
+dirLight.shadow.bias = -0.001;
 dirLight.shadow.mapSize.width = 2048;
 dirLight.shadow.mapSize.height = 2048;
 dirLight.shadow.camera.left = -200;
@@ -619,7 +623,7 @@ scene.add(dirLight);
 
 // Ground plane
 const groundGeo = new THREE.PlaneGeometry(1000, 1000);
-const groundMat = new THREE.MeshStandardMaterial({ color: '#c8e4c4', roughness: 1.0 });
+const groundMat = new THREE.MeshStandardMaterial({ color: '#e8f4e5', roughness: 0.8, metalness: 0.1 });
 const ground = new THREE.Mesh(groundGeo, groundMat);
 ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
@@ -683,19 +687,25 @@ loader.load('covenant%20map.glb', (gltf) => {
         buildings3D.push(child);
         child.userData = matchedData; 
         
+        // Add subtle outlines
+        const edges = new THREE.EdgesGeometry(child.geometry);
+        const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.15 }));
+        child.add(line);
+        
         const catColor = getCatColor(matchedData.cat);
         const newMat = new THREE.MeshStandardMaterial({
             color: new THREE.Color(catColor),
-            roughness: 0.7,
-            metalness: 0.1
+            roughness: 0.4,
+            metalness: 0.1,
+            flatShading: false
         });
         originalMaterials.set(child.uuid, newMat);
         child.material = newMat;
       } else {
         child.material = new THREE.MeshStandardMaterial({
-            color: new THREE.Color('#f0f0f0'),
-            roughness: 0.9,
-            metalness: 0.0
+            color: new THREE.Color('#e2e8f0'),
+            roughness: 0.6,
+            metalness: 0.1
         });
       }
     }
