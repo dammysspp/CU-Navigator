@@ -498,6 +498,126 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;color:var(
 }
 #menu-toggle:hover { transform: scale(1.08); background: #fff; }
 
+
+/* ====== WAYPOINT / ROUTING PANEL ====== */
+#nav-panel {
+  position: fixed;
+  top: 0; left: -380px;
+  width: 360px; max-width: 93vw;
+  height: 100vh;
+  background: #fff;
+  box-shadow: 4px 0 30px rgba(0,0,0,0.22);
+  z-index: 5500;
+  display: flex; flex-direction: column;
+  transition: left 0.35s cubic-bezier(0.4,0,0.2,1);
+  overflow: hidden;
+}
+#nav-panel.open { left: 0; }
+
+.np-header {
+  background: linear-gradient(135deg, #2e0c59 0%, #5B2D8E 100%);
+  padding: 20px 18px 16px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.np-title { font-size: 14px; font-weight: 700; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+.np-close { position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.15); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; font-size: 20px; cursor: pointer; display:flex;align-items:center;justify-content:center; }
+.np-close:hover { background: rgba(255,255,255,0.3); }
+
+.np-input-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.np-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.np-dot.green  { background: #22c55e; }
+.np-dot.purple { background: #facc15; }
+.np-dot.line   { width: 2px; height: 20px; background: rgba(255,255,255,0.3); border-radius: 2px; margin-left: 5px; }
+.np-field {
+  flex: 1; background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25); border-radius: 8px;
+  padding: 9px 12px; color: #fff; font-size: 13px;
+  font-family: 'Outfit', sans-serif; outline: none;
+  cursor: pointer;
+}
+.np-field::placeholder { color: rgba(255,255,255,0.55); }
+.np-swap { background: rgba(255,255,255,0.15); border: none; color: #facc15; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer; flex-shrink: 0; }
+.np-swap:hover { background: rgba(255,255,255,0.3); }
+
+#np-go-btn {
+  width: 100%; padding: 12px; margin-top: 8px;
+  background: #facc15; color: #2e0c59;
+  border: none; border-radius: 10px;
+  font-size: 14px; font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer; transition: opacity 0.2s;
+}
+#np-go-btn:hover { opacity: 0.85; }
+
+.np-body { flex: 1; overflow-y: auto; padding: 0; }
+.np-mode-row { display: flex; gap: 0; border-bottom: 1px solid #e5e7eb; flex-shrink: 0; }
+.np-mode-btn { flex: 1; padding: 12px 0; font-size: 20px; text-align: center; background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+.np-mode-btn.active { border-bottom-color: #5B2D8E; background: #f5f3ff; }
+
+.np-route-summary {
+  padding: 16px 18px;
+  background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+  border-bottom: 1px solid #e5e7eb;
+}
+.np-eta { font-size: 28px; font-weight: 800; color: #2e0c59; }
+.np-dist { font-size: 13px; color: #6b7280; margin-top: 2px; }
+.np-start-btn {
+  margin-top: 12px; width: 100%; padding: 11px;
+  background: #2e0c59; color: #facc15;
+  border: none; border-radius: 10px;
+  font-size: 14px; font-weight: 700;
+  font-family: 'Outfit', sans-serif; cursor: pointer;
+}
+.np-start-btn:hover { background: #5B2D8E; }
+
+.np-steps { padding: 16px 18px; }
+.np-step { display: flex; gap: 12px; margin-bottom: 18px; align-items: flex-start; }
+.np-step-num {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: linear-gradient(135deg, #2e0c59, #5B2D8E);
+  color: #facc15; font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; box-shadow: 0 2px 6px rgba(46,12,89,0.3);
+}
+.np-step-text { font-size: 13px; color: #374151; line-height: 1.5; }
+.np-step-dist { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+
+/* Dropdown search list */
+.np-search-list {
+  position: absolute; z-index: 9999;
+  background: #fff; border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  max-height: 220px; overflow-y: auto;
+  left: 18px; right: 18px;
+  display: none;
+}
+.np-search-list.open { display: block; }
+.np-search-item { padding: 10px 14px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #f3f4f6; }
+.np-search-item:hover { background: #f5f3ff; }
+.np-search-item:last-child { border-bottom: none; }
+
+/* Route line animation */
+@keyframes dash-move { to { stroke-dashoffset: -20; } }
+
+
+#open-nav-btn {
+  position: absolute;
+  bottom: 24px; left: 20px;
+  z-index: 4000;
+  background: linear-gradient(135deg, #2e0c59, #5B2D8E);
+  color: #facc15;
+  border: none; border-radius: 99px;
+  padding: 12px 22px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px; font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(46,12,89,0.45);
+  display: flex; align-items: center; gap: 8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+#open-nav-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(46,12,89,0.55); }
+
 </style>
 <script src="https://unpkg.com/three@0.128.0/examples/js/renderers/CSS2DRenderer.js"></script>
 </head>
@@ -1072,8 +1192,11 @@ function deselectBuilding() {
   selectedId = null;
   document.getElementById('place-card').classList.remove('open');
   buildings3D.forEach(mesh => {
-    mesh.material = originalMaterials.get(mesh.uuid);
+    const orig = originalMaterials.get(mesh.uuid);
+    if(orig) mesh.material = orig;
   });
+  // Zoom back to overview
+  animateCam(new THREE.Vector3(0, 0, 0), 200);
 }
 
 function animateCam(targetVec, offsetDist = 60) {
@@ -1489,6 +1612,51 @@ document.querySelectorAll('.nav-item, .tb-link, .mn-item, .sb-help').forEach(btn
     <span id="card-tags" style="display:none"></span>
     <span id="card-stats" style="display:none"></span>
     <span id="rc-dest" style="display:none">Select a destination</span>
+
+
+<!-- NAVIGATION / WAYPOINT PANEL -->
+<div id="nav-panel">
+  <div class="np-header">
+    <div class="np-title">Get Directions</div>
+    <button class="np-close" onclick="closeNavPanel()">×</button>
+    <div class="np-input-row">
+      <div class="np-dot green"></div>
+      <input id="np-from" class="np-field" type="text" placeholder="From: Main Gate" value="Main Gate" readonly
+        onclick="openBuildingSearch('np-from')">
+    </div>
+    <div class="np-input-row">
+      <div class="np-dot line"></div>
+    </div>
+    <div class="np-input-row">
+      <div class="np-dot purple"></div>
+      <input id="np-to" class="np-field" type="text" placeholder="To: Select destination…" readonly
+        onclick="openBuildingSearch('np-to')">
+      <button class="np-swap" onclick="swapNavPoints()" title="Swap">⇅</button>
+    </div>
+    <div id="np-search-list" class="np-search-list"></div>
+    <button id="np-go-btn" onclick="calculateRoute()">🗺 Get Directions</button>
+  </div>
+
+  <div class="np-mode-row">
+    <button class="np-mode-btn active" title="Walking" onclick="setMode('walk',this)">🚶</button>
+    <button class="np-mode-btn" title="Cycling" onclick="setMode('bike',this)">🚲</button>
+    <button class="np-mode-btn" title="Driving" onclick="setMode('car',this)">🚗</button>
+  </div>
+
+  <div class="np-body">
+    <div id="np-route-result" style="display:none;">
+      <div class="np-route-summary">
+        <div class="np-eta" id="np-eta">—</div>
+        <div class="np-dist" id="np-dist">Select origin and destination</div>
+        <button class="np-start-btn" onclick="startWalkthrough()">▶ Start Navigation</button>
+      </div>
+      <div class="np-steps" id="np-steps"></div>
+    </div>
+    <div id="np-empty" style="padding:30px 18px; text-align:center; color:#9ca3af; font-size:13px;">
+      Select a starting point and destination to see directions.
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
