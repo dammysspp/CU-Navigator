@@ -601,9 +601,12 @@ controls.minDistance = 10;
 controls.maxDistance = 250;
 
 // Lighting
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
 scene.add(ambientLight);
-const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
+hemiLight.position.set(0, 200, 0);
+scene.add(hemiLight);
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
 dirLight.position.set(100, 200, 100);
 dirLight.castShadow = true;
 dirLight.shadow.mapSize.width = 2048;
@@ -869,13 +872,13 @@ document.addEventListener('click',e=>{if(!e.target.closest('#search-input')&&!e.
 // QUICK ACCESS
 // =====================================================
 const quickDefs=[
-  {id:'library',   lbl:'Covenant\nLibrary', icon:'📚'},
-  {id:'chapel',    lbl:'Chapel',            icon:'⛪'},
-  {id:'senate',    lbl:'Student\nCenter',   icon:'🏛️'},
-  {id:'printing',  lbl:'ICT Center',        icon:'💻'},
-  {id:'cafeteria', lbl:'Cafeteria',         icon:'🍽️'},
-  {id:'atm',       lbl:'Bank',              icon:'🏧'},
-  {id:'clinic',    lbl:'Medical\nCenter',   icon:'🏥'},
+  {id:'library',   lbl:'Centre for\nLearning', icon:'📚'},
+  {id:'chapel',    lbl:'University\nChapel',   icon:'⛪'},
+  {id:'senate',    lbl:'Senate\nBuilding',     icon:'🏛️'},
+  {id:'printing',  lbl:'ICT\nCentre',          icon:'💻'},
+  {id:'cafeteria', lbl:'Main\nCafeteria',      icon:'🍽️'},
+  {id:'atm',       lbl:'ATM /\nBanking',       icon:'🏧'},
+  {id:'clinic',    lbl:'Medical\nCentre',      icon:'🏥'},
 ];
 
 const qRow=document.getElementById('quick-row');
